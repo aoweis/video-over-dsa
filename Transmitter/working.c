@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 	source = gst_element_factory_make ("v4l2src", "source");
 
 	/* A Caps Filter is assigned */
-	csp_filter = gst_element_factory_make("ffmpegcolorspace", "csp_filter");
+	csp_filter = gst_element_factory_make("videoconvert", "csp_filter");
 	//  textoverly=gst_element_factory_make ("videotestsrc", "source");
 	//  timeoverly=gst_element_factory_make ("videotestsrc", "source");
 
@@ -86,32 +86,57 @@ int main(int argc, char *argv[]) {
 	pipeline = gst_pipeline_new ("test-pipeline");
 
 	/* Check that elements are correctly initialized */
+	
 	if (!pipeline || !source || !csp_filter || !textoverlay || !encoder || !mux || !sink) {
 		g_printerr ("Not all elements could be created.\n");
 		if(!mux)
 			g_printerr("DVB-Mux not created\n");
+
+		if(!pipeline)
+			g_printerr("DVB-pipeline not created\n");
+
+		if(!source)
+			g_printerr("DVB-source not created\n");
+
+		if(!csp_filter)
+			g_printerr("DVB-csp_filter not created\n");
+
+		if(!textoverlay)
+			g_printerr("DVB-textoverlay not created\n");
+
+		if(!encoder)
+			g_printerr("DVB-encoder not created\n");
+
+		if(!sink)
+			g_printerr("DVB-sink not created\n");
 		return -1;
 	}
-	//printf("Print3\n");
+	printf("Print3\n");
 
 	/* Build the pipeline */
 	gst_bin_add_many (GST_BIN (pipeline), source, csp_filter, textoverlay, encoder, mux, sink, NULL);
 
 	/* Specify what kind of video is wanted from the camera */
-	caps = gst_caps_new_simple("video/x-raw-yuv",
+	//caps = gst_caps_new_simple("video/x-raw-yuv",
+	//		"width", G_TYPE_INT, 640,
+	//		"height", G_TYPE_INT, 480,
+	//		"framerate", GST_TYPE_FRACTION, 25, 1,
+	//		NULL);
+
+			caps = gst_caps_new_simple("video/x-raw",
 			"width", G_TYPE_INT, 640,
 			"height", G_TYPE_INT, 480,
 			"framerate", GST_TYPE_FRACTION, 25, 1,
 			NULL);
 			
-	//printf("Print4\n");
+	printf("Print4\n");
 	/* Link the camera source and colorspace filter using capabilities specified */
 	if(!gst_element_link_filtered(source, csp_filter, caps)){
-		//printf("Print4.5\n");		
+			 printf("Print4.5\n");		
       		 return FALSE;
     	}
-    	gst_caps_unref(caps);
-    	//printf("Print5\n");
+    gst_caps_unref(caps);
+    printf("Print5\n");
 	//   gst_element_link(source, csp_filter);
 	//   gst_element_link_many(encoder, mux, sink);
 
@@ -151,7 +176,7 @@ int main(int argc, char *argv[]) {
 	   	gst_object_unref (pipeline);
 	   	 return -1;
 	  }*/
-
+printf("Print6\n");
 	//printf("Print6\n");
 	/* Modify the properties of some elements*/
 	// g_object_set (source, "pattern", 0, NULL);
@@ -173,7 +198,7 @@ int main(int argc, char *argv[]) {
 	g_object_set (sink, "location", file_sink_location, NULL);
 	g_object_set (source, "device", "/dev/video0", NULL); // Taking video source from web camera
 
-	//printf("Print7\n");
+	printf("Print7\n");
 
 	/* Getting the time before starting to play */
 	//start = clock();

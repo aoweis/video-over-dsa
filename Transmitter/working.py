@@ -11,7 +11,7 @@ class ThreadClass(threading.Thread):
         return
 
 framerate=25
-filesink_location="/home/droy/Documents/GNURadio_Files/video1.ts"
+filesink_location="/home/ahmad/video-tx/video1.ts"
 enc_bitrate= 10
 time= 5
 
@@ -24,6 +24,6 @@ cprog_name= "working"
 
 command= "./"+str(cprog_name)+" "+str(framerate)+" "+filesink_location;
 
-print command
+print(command)
 os.system(command)
 

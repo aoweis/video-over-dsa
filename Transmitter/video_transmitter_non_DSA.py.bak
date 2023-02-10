@@ -14,7 +14,7 @@ if __name__ == '__main__':
             x11 = ctypes.cdll.LoadLibrary('libX11.so')
             x11.XInitThreads()
         except:
-            print("Warning: failed to XInitThreads()")
+            print "Warning: failed to XInitThreads()"
 
 from gnuradio import blocks
 from gnuradio import digital
@@ -71,7 +71,7 @@ class video_transmitter(grc_wxgui.top_block_gui):
         	",".join(("", "")),
         	uhd.stream_args(
         		cpu_format="fc32",
-        		channels=list(range(1)),
+        		channels=range(1),
         	),
         )
         self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
@@ -199,7 +199,7 @@ def main(top_block_cls=video_transmitter, options=None):
     #print ("Sleeping")
     #tb.get_freq()
     #tb.Stop(True)
-    print(("Freq Before: %f" % tb.get_freq()))
+    print ("Freq Before: %f" % tb.get_freq())
     #time.sleep(5)
     #tb.set_freq(1750000000)
 
@@ -214,17 +214,17 @@ def main(top_block_cls=video_transmitter, options=None):
     num= 2.4
     init_freq=tb.get_freq()
     while num > 0:   
-	    buf = ''
-	    sep = ' '
-	    while sep not in buf:
-		    buf += s.recv(1024)
-	    num = float(buf)
-	    print(("Number received %f" % num))
-	    if int(num) == 0:
-		    break 
-	    tb.set_freq(num*1000000000)
-	    print(("Freq After: %f" % tb.get_freq()))
-#	    print ("Frequency is: %f" get_freq())
+	buf = ''
+	sep = ' '
+	while sep not in buf:
+		buf += s.recv(1024)
+	num = float(buf)
+	print ("Number received %f" % num)
+	if int(num) == 0:
+		break 
+	tb.set_freq(num*1000000000)
+	print ("Freq After: %f" % tb.get_freq())
+#	print ("Frequency is: %f" get_freq())
 	                                 
     print ("Print 5")
     s.close()
@@ -232,7 +232,7 @@ def main(top_block_cls=video_transmitter, options=None):
 
 
 ########################################################
-    print(("Freq After Finally: %f" % tb.get_freq()))
+    print ("Freq After Finally: %f" % tb.get_freq())
     tb.Wait()
     print ("Print 4")
 
