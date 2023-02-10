@@ -11,18 +11,13 @@ class ThreadClass(threading.Thread):
         return
 
 framerate=25
-filesink_location="/home/ahmad/video-tx/video1.ts"
-enc_bitrate= 10
-time= 5
-
-enc_width=640
-enc_height=480
+filesink_location="video1.ts"
 
 #Name without .c extension
 cprog_name= "working"
 
 
-command= "./"+str(cprog_name)+" "+str(framerate)+" "+filesink_location;
+command= "./"+str(cprog_name)+" "+filesink_location;
 
 print(command)
 os.system(command)
