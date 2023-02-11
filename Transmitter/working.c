@@ -14,19 +14,21 @@ working_main (int argc, char *argv[])
   GstMessage *msg;
   GstStateChangeReturn ret;
   char *file_sink_location;
+  char *usb_driver_name;
 
-  if(argc!=2){
-		g_printerr("Give input in format:%s filename, or %s screen\n", argv[0],argv[0]);
+  if(argc!=3){
+		g_printerr("Give input in format:%s filename usb_driver_name, or %s screen usb_driver_name\n", argv[0],argv[0]);
 		return -1;	
 	}
 
   file_sink_location = argv[1];
+  usb_driver_name = argv[2];
 
   /* Initialize GStreamer */
   gst_init (&argc, &argv);
 
   /* Create the elements */
-  source = gst_element_factory_make ("v4l2src", "source");
+  source = gst_element_factory_make (usb_driver_name, "source");
 
   if(strcmp(file_sink_location, "screen") == 0 ){
     sink = gst_element_factory_make ("autovideosink", "sink");
