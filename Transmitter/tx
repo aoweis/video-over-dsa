@@ -1,0 +1,10 @@
+gst-launch-1.0 -v v4l2src ! videoconvert ! filesink location="video1.ts"
+gst-launch-1.0 -v v4l2src ! videoconvert ! autovideosink
+
+gst-launch-1.0 -v filesrc location="/home/ahmad/GitHub/video-over-dsa/Transmitter/video1.ts" ! videoconvert ! autovideosink 
+
+
+
+
+
+

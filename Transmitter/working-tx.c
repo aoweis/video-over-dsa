@@ -5,11 +5,11 @@
 #include <TargetConditionals.h>
 #endif
 
-// To compile, use: gcc working.c -o working `pkg-config --cflags --libs gstreamer-1.0` -lm 
+// To compile, use: gcc working-tx.c -o working-tx `pkg-config --cflags --libs gstreamer-1.0` -lm 
 int
 working_main (int argc, char *argv[])
 {
-  GstElement *pipeline, *source, *sink, * converter, *encoder;
+  GstElement *pipeline, *source, *sink, * converter;
   GstBus *bus;
   GstMessage *msg;
   GstStateChangeReturn ret;
@@ -37,9 +37,6 @@ working_main (int argc, char *argv[])
     sink = gst_element_factory_make ("filesink", "sink");
   }
   
-
-  encoder = gst_element_factory_make ("x264enc", "encoder");
-
   g_object_set (sink, "location", file_sink_location, NULL);
 
   converter = gst_element_factory_make ("videoconvert", "converter");
@@ -47,13 +44,13 @@ working_main (int argc, char *argv[])
   /* Create the empty pipeline */
   pipeline = gst_pipeline_new ("test-pipeline");
 
-  if (!pipeline || !source || !sink || !converter || !encoder) {
+    if (!pipeline || !source || !sink || !converter) {
     g_printerr ("Not all elements could be created.\n");
     return -1;
   }
 
   /* Build the pipeline */
-  gst_bin_add_many (GST_BIN (pipeline), source,  converter, encoder, sink, NULL);
+gst_bin_add_many (GST_BIN (pipeline), source,  converter, sink, NULL);
   if (gst_element_link_many (source, converter, sink, NULL) != TRUE) {
     g_printerr ("Elements could not be linked.\n");
     gst_object_unref (pipeline);

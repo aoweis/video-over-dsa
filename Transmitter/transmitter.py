@@ -80,8 +80,9 @@ class transmitter(gr.top_block, Qt.QWidget):
         ##################################################
         self.num_key = num_key = "packet_num"
         self.len_key = len_key = "packet_len"
-        self.tx_gain = tx_gain = 1
-        self.samp_rate = samp_rate = 1e6
+        self.tx_gain = tx_gain = .5
+        self.samp_rate = samp_rate = 6e6
+        self.rf_freq = rf_freq = 2501e6
         self.hdr_format = hdr_format = digital.header_format_crc(len_key, num_key)
 
         ##################################################
@@ -102,7 +103,7 @@ class transmitter(gr.top_block, Qt.QWidget):
         self.qtgui_sink_x_0.set_update_time(1.0/10)
         self._qtgui_sink_x_0_win = sip.wrapinstance(self.qtgui_sink_x_0.qwidget(), Qt.QWidget)
 
-        self.qtgui_sink_x_0.enable_rf_freq(False)
+        self.qtgui_sink_x_0.enable_rf_freq(True)
 
         self.top_layout.addWidget(self._qtgui_sink_x_0_win)
         self.digital_protocol_formatter_bb_0 = digital.protocol_formatter_bb(hdr_format, "packet_len")
@@ -117,7 +118,7 @@ class transmitter(gr.top_block, Qt.QWidget):
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, 252, "packet_len")
         self.blocks_repack_bits_bb_1 = blocks.repack_bits_bb(8, 1, "packet_len", False, gr.GR_MSB_FIRST)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(tx_gain)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/ahmad/GitHub/video-over-dsa/Transmitter/video1.ts', True, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/ahmad/GitHub/video-over-dsa/Transmitter/transmit_file', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.bladeRF_sink_0 = bladeRF.sink(
             args="numchan=" + str(1)
@@ -150,9 +151,9 @@ class transmitter(gr.top_block, Qt.QWidget):
 
         )
         self.bladeRF_sink_0.set_sample_rate(samp_rate)
-        self.bladeRF_sink_0.set_center_freq(2520e6,0)
-        self.bladeRF_sink_0.set_bandwidth(6e6,0)
-        self.bladeRF_sink_0.set_gain(10, 0)
+        self.bladeRF_sink_0.set_center_freq(rf_freq,0)
+        self.bladeRF_sink_0.set_bandwidth(samp_rate,0)
+        self.bladeRF_sink_0.set_gain(50, 0)
         self.bladeRF_sink_0.set_if_gain(20, 0)
 
 
@@ -161,13 +162,13 @@ class transmitter(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.bladeRF_sink_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.qtgui_sink_x_0, 0))
         self.connect((self.blocks_repack_bits_bb_1, 0), (self.digital_gmsk_mod_0, 0))
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.digital_crc32_bb_0, 0))
         self.connect((self.blocks_tagged_stream_mux_0, 0), (self.blocks_repack_bits_bb_1, 0))
         self.connect((self.digital_crc32_bb_0, 0), (self.blocks_tagged_stream_mux_0, 1))
         self.connect((self.digital_crc32_bb_0, 0), (self.digital_protocol_formatter_bb_0, 0))
         self.connect((self.digital_gmsk_mod_0, 0), (self.blocks_multiply_const_vxx_0, 0))
+        self.connect((self.digital_gmsk_mod_0, 0), (self.qtgui_sink_x_0, 0))
         self.connect((self.digital_protocol_formatter_bb_0, 0), (self.blocks_tagged_stream_mux_0, 0))
 
 
@@ -206,7 +207,15 @@ class transmitter(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.bladeRF_sink_0.set_sample_rate(self.samp_rate)
+        self.bladeRF_sink_0.set_bandwidth(self.samp_rate, 0)
         self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
+
+    def get_rf_freq(self):
+        return self.rf_freq
+
+    def set_rf_freq(self, rf_freq):
+        self.rf_freq = rf_freq
+        self.bladeRF_sink_0.set_center_freq(self.rf_freq, 0)
 
     def get_hdr_format(self):
         return self.hdr_format

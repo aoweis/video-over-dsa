@@ -17,7 +17,7 @@ filesink_location="video1.ts"
 usb_driver_name = "v4l2src"
 
 
-cprog_name= "working"
+cprog_name= "working-tx"
 
 
 command= "./" + str(cprog_name) + " " + filesink_location + " " + usb_driver_name;
