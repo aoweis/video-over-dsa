@@ -1,0 +1,10 @@
+gst-launch-1.0 -v v4l2src ! video/x-raw,format=I420,width=800,height=600,framerate=15/1 ! avenc_mpeg4 ! rtpmp4vpay config-interval=3 ! filesink location=video1.ts
+
+
+
+gst-launch-1.0 -v filesrc location=video1.ts caps = "application/x-rtp\,\ media\=\(string\)video\,\ clock-rate\=\(int\)90000\,\ encoding-name\=\(string\)MP4V-ES\,\ profile-level-id\=\(string\)1\,\ config\=\(string\)000001b001000001b58913000001000000012000c48d8800cd3204709443000001b24c61766335362e312e30\,\ payload\=\(int\)96\,\ ssrc\=\(uint\)2873740600\,\ timestamp-offset\=\(uint\)391825150\,\ seqnum-offset\=\(uint\)2980" ! rtpmp4vdepay ! avdec_mpeg4 ! autovideosink
+
+
+
+
+gst-launch-1.0 -v filesrc location=video1.ts ! capsfilter caps = "application/x-rtp\,\ media\=\(string\)video\,\ clock-rate\=\(int\)90000\,\ encoding-name\=\(string\)MP4V-ES\,\ profile-level-id\=\(string\)1\,\ config\=\(string\)000001b001000001b58913000001000000012000c48d8800cd3204709443000001b24c61766335362e312e30\,\ payload\=\(int\)96\,\ ssrc\=\(uint\)2873740600\,\ timestamp-offset\=\(uint\)391825150\,\ seqnum-offset\=\(uint\)2980" ! rtpmp4vdepay ! avdec_mpeg4 ! autovideosink
